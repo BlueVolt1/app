@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BlueVolt Studio - Official hub for Gym High Bar">
+    <title>BlueVolt | Gym High Bar</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            cyan: '#06b6d4',
+                            blue: '#3b82f6',
+                            neon: '#00f2fe'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #020617, #0f172a, #0b1120, #083344);
+            background-size: 400% 400%;
+            animation: bgPulse 15s ease infinite;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        @keyframes bgPulse {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 242, 254, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 242, 254, 0.15);
+        }
+
+        .glass-button {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.15), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .glass-button:hover::before {
+            left: 100%;
+        }
+
+        .glass-button:hover {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5), inset 0 0 15px rgba(0, 242, 254, 0.2);
+            transform: translateY(-6px) scale(1.02);
+            z-index: 10;
+        }
+
+        .text-neon {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.5), 0 0 30px rgba(0, 242, 254, 0.3);
+            animation: textPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textPulse {
+            from {
+                text-shadow: 0 0 10px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.5);
+            }
+
+            to {
+                text-shadow: 0 0 15px rgba(0, 242, 254, 1), 0 0 30px rgba(0, 242, 254, 0.7), 0 0 45px rgba(0, 242, 254, 0.4);
+            }
+        }
+
+        .text-glow {
+            text-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        .legal-content h4 {
+            color: #fff;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .legal-content p,
+        .legal-content li {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .legal-content p:hover,
+        .legal-content li:hover {
+            color: #cbd5e1;
+        }
+
+        .legal-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .legal-content strong {
+            color: #f1f5f9;
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0f4a66;
+            border-radius: 5px;
+            border: 2px solid #020617;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+
+        /* Ambient Blob Animations */
+        @keyframes floatBlob1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes floatBlob2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(-50px, 30px) scale(1.2);
+            }
+
+            66% {
+                transform: translate(20px, -20px) scale(0.8);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        .blob-1 {
+            animation: floatBlob1 20s infinite ease-in-out;
+        }
+
+        .blob-2 {
+            animation: floatBlob2 25s infinite ease-in-out;
+        }
+    </style>
+</head>
+
+<body
+    class="min-h-screen antialiased flex flex-col items-center justify-start pt-16 pb-8 px-4 sm:px-6 lg:px-8 relative">
+
+    <!-- Ambient glowing blobs -->
+    <div
+        class="fixed top-0 left-0 w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-cyan-600/10 blur-[100px] pointer-events-none z-0 blob-1 translate-x-[-20%] translate-y-[-20%]">
+    </div>
+    <div
+        class="fixed bottom-0 right-0 w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] rounded-full bg-blue-700/10 blur-[120px] pointer-events-none z-0 blob-2 translate-x-[20%] translate-y-[20%]">
+    </div>
+
+    <!-- Particle Background -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Main Content Container: Made wider for laptops -->
+    <div class="max-w-5xl xl:max-w-6xl mx-auto w-full flex-grow flex flex-col relative z-10">
+
+        <!-- Header -->
+        <header class="text-center mb-20 reveal active">
+            <div class="inline-block mb-8 relative group cursor-default">
+                <!-- Glowing background effect behind the logo -->
+                <div
+                    class="absolute inset-0 bg-brand-cyan/20 rounded-full blur-2xl group-hover:bg-brand-neon/50 transition duration-700 animate-pulse">
+                </div>
+                <!-- Actual Image Logo -->
+                <img src="BlueVolt Logo.png" alt="BlueVolt Logo"
+                    class="relative w-36 h-36 md:w-48 md:h-48 object-contain drop-shadow-[0_0_20px_rgba(0,242,254,0.4)] transform group-hover:scale-110 group-hover:rotate-2 transition duration-500 ease-out">
+            </div>
+            <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-white mb-4"><span
+                    class="text-neon">BlueVolt</span></h1>
+            <h2
+                class="text-3xl sm:text-4xl font-semibold text-cyan-400 opacity-90 tracking-widest uppercase text-glow mt-2">
+                Gym High Bar</h2>
+            <p class="mt-6 text-slate-300 max-w-2xl mx-auto text-lg sm:text-xl leading-relaxed">Push your limits and
+                reach new heights. Welcome to the official hub for BlueVolt Studio.</p>
+        </header>
+
+        <!-- Links Grid (7 Buttons Symmetrical Layout) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-24 w-full reveal">
+
+            <!-- App Store -->
+            <a href="https://apps.apple.com/ca/app/gym-high-bar/id6449169917" target="_blank" rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <path
+                        d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91 1.65.11 3.11.83 4 2.11-3.29 1.94-2.76 6.36.42 7.74-.75 1.83-1.63 3.58-2.63 5.03zM12 7.76c-.08-1.85 1.36-3.64 3.09-3.76.19 1.96-1.44 3.73-3.09 3.76z" />
+                </svg>
+                <span>App Store</span>
+            </a>
+
+            <!-- Google Play -->
+            <a href="https://play.google.com/store/apps/details?id=com.bluevolt.gymhighbar" target="_blank"
+                rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <path
+                        d="M4.3 2.1C3.8 2.5 3.5 3.3 3.5 4.5v15c0 1.2.3 2 .8 2.4l.1.1 8.5-8.5v-.2L4.4 2l-.1.1zm9.4 9.4l3.1 3.1 3.7-2.1c1.1-.6 1.1-1.6 0-2.2L16.8 8l-3.1 3.5zm-1.1-1.1L4.8.8l9.6 5.5-1.8 2zm0 2.2l1.8 2-9.6 5.5L12.6 12z" />
+                </svg>
+                <span>Google Play</span>
+            </a>
+
+            <!-- Discord -->
+            <a href="https://discord.com/invite/ff4nxUPhpG" target="_blank" rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <path
+                        d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                </svg>
+                <span>Discord</span>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/_bluevolt_/" target="_blank" rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                </svg>
+                <span>Instagram</span>
+            </a>
+
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@bluevolt_" target="_blank" rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <path
+                        d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                </svg>
+                <span>TikTok</span>
+            </a>
+
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@BlueVoIt" target="_blank" rel="noopener noreferrer"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <path
+                        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+                <span>YouTube</span>
+            </a>
+
+            <!-- Email (Centered on small screens) -->
+            <a href="mailto:1bluevolt@gmail.com"
+                class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-2 lg:col-span-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="group-hover:text-cyan-300 transition-colors transform group-hover:scale-125 duration-300">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <span class="break-all text-center text-sm sm:text-base md:text-lg">1bluevolt@gmail.com</span>
+            </a>
+        </div>
+
+        <!-- Privacy Policy -->
+        <div class="glass-panel rounded-3xl p-8 sm:p-12 mb-12 legal-content reveal">
+            <h3
+                class="text-3xl sm:text-4xl font-bold text-white mb-8 border-b border-cyan-500/30 pb-6 text-glow inline-block">
+                Privacy Policy</h3>
+
+            <p class="text-sm opacity-80 mb-8 tracking-wider uppercase"><strong>Effective Date:</strong> June 12, 2026
+            </p>
+
+            <p class="text-lg">At BlueVolt, we prioritize the protection and transparency of your data. This Privacy
+                Policy details the information we collect when you play "Gym High Bar" and how we use it.</p>
+
+            <h4>1. Information We Collect</h4>
+            <p>To provide and improve our services, we collect certain information when you interact with our game:</p>
+            <ul>
+                <li><strong>Device Information:</strong> We collect device identifiers (such as IDFA, GAID, and vendor
+                    IDs) to ensure proper game functionality, save progress, and deliver relevant advertising.</li>
+                <li><strong>Location Data:</strong> We may collect your approximate location data (e.g., country or city
+                    level based on IP address) to localize your experience, analyze regional performance, and provide
+                    appropriately targeted advertisements.</li>
+            </ul>
+
+            <h4>2. Third-Party Data Sharing and Ad Mediation</h4>
+            <p>"Gym High Bar" is free to play, supported by advertisements. To serve these ads, we partner with
+                third-party ad mediation platforms. We share the aforementioned device identifiers and approximate
+                location data with these partners:</p>
+            <ul class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 mb-8 list-none ml-0">
+                <li
+                    class="bg-slate-800/40 rounded-xl p-4 border border-cyan-500/20 text-center shadow-lg hover:border-cyan-500/50 transition-colors">
+                    <strong>LevelPlay</strong> <br><span class="text-sm opacity-75">(ironSource)</span>
+                </li>
+                <li
+                    class="bg-slate-800/40 rounded-xl p-4 border border-cyan-500/20 text-center shadow-lg hover:border-cyan-500/50 transition-colors flex items-center justify-center">
+                    <strong>Unity Ads</strong>
+                </li>
+                <li
+                    class="bg-slate-800/40 rounded-xl p-4 border border-cyan-500/20 text-center shadow-lg hover:border-cyan-500/50 transition-colors flex items-center justify-center">
+                    <strong>Google AdMob</strong>
+                </li>
+            </ul>
+            <p>These platforms may use this data to provide personalized advertisements based on your interests. Please
+                refer to their respective privacy policies for more details on their data processing practices.</p>
+
+            <h4>3. Analytics and Crash Reporting</h4>
+            <p>We use analytics and crash reporting tools to understand how players interact with "Gym High Bar" and to
+                identify and fix technical issues. This data is collected anonymously and aggregated to help us improve
+                game stability, optimize performance, and enhance the overall user experience.</p>
+
+            <h4>4. Data Deletion Request</h4>
+            <p>You have the right to request the deletion of your personal data at any time. To have all your data wiped
+                from our systems, please follow these instructions:</p>
+            <div class="bg-cyan-950/30 border-l-4 border-cyan-400 p-6 rounded-r-xl mt-6 shadow-inner">
+                <ol class="list-decimal ml-6 text-slate-200">
+                    <li class="mb-3">Send an email to <a href="mailto:1bluevolt@gmail.com"
+                            class="text-cyan-400 hover:text-cyan-300 underline font-semibold transition-colors">1bluevolt@gmail.com</a>
+                        with the subject line <strong>"Data Deletion Request"</strong>.</li>
+                    <li class="mb-1">Include your exact <strong>in-game username</strong> in the body of the email.</li>
+                </ol>
+            </div>
+            <p class="mt-6">Upon receiving your request, we will process the deletion of your data within 30 days and
+                confirm once the process is complete.</p>
+        </div>
+
+        <!-- Terms of Service -->
+        <div class="glass-panel rounded-3xl p-8 sm:p-12 mb-20 legal-content reveal">
+            <h3
+                class="text-3xl sm:text-4xl font-bold text-white mb-8 border-b border-cyan-500/30 pb-6 text-glow inline-block">
+                Terms of Service</h3>
+
+            <p class="text-sm opacity-80 mb-8 tracking-wider uppercase"><strong>Effective Date:</strong> June 12, 2026
+            </p>
+
+            <p class="text-lg">Welcome to BlueVolt! By downloading, accessing, or playing "Gym High Bar", you agree to
+                be bound by these Terms of Service.</p>
+
+            <h4>1. Acceptance of Terms</h4>
+            <p>By accessing or using our game, you agree to comply with and be bound by these Terms. If you do not
+                agree, please do not install or play the game.</p>
+
+            <h4>2. Acceptable Use</h4>
+            <p>You agree to use "Gym High Bar" only for lawful purposes and in accordance with these Terms. You shall
+                not:</p>
+            <ul class="space-y-3">
+                <li>Use cheats, exploits, automation software, bots, hacks, or any unauthorized third-party software
+                    designed to modify or interfere with the game experience.</li>
+                <li>Reverse engineer, decompile, disassemble, or decipher any part of the game.</li>
+                <li>Harass, abuse, or harm other players or our staff.</li>
+            </ul>
+
+            <h4>3. Intellectual Property</h4>
+            <p>All rights, title, and interest in and to "Gym High Bar" (including but not limited to any games, titles,
+                computer code, themes, objects, characters, character names, stories, dialogue, catchphrases, concepts,
+                artwork, animations, sounds, musical compositions, audio-visual effects, methods of operation, moral
+                rights, documentation, and in-game chat transcripts) are owned by BlueVolt. You are granted a limited,
+                non-exclusive, non-transferable, revocable license to access and play the game for your personal,
+                non-commercial entertainment purposes only.</p>
+
+            <h4>4. Limitation of Liability</h4>
+            <p>To the maximum extent permitted by applicable law, BlueVolt shall not be liable for any indirect,
+                incidental, consequential, special, punitive, or other similar damages, including but not limited to
+                loss of revenues, lost profits, lost data, or business interruption or other intangible losses, arising
+                out of or relating in any way to these Terms of Service or the game itself, whether based on contract,
+                tort, or any other legal theory, and whether or not BlueVolt has been advised of the possibility of such
+                damages.</p>
+
+            <h4>5. Modifications to Terms</h4>
+            <p>We reserve the right to update or modify these Terms at any time. Continued use of the game following any
+                changes constitutes your acceptance of the new Terms.</p>
+
+            <p class="mt-10 text-lg text-center p-6 bg-slate-800/30 rounded-xl border border-slate-700/50">If you have
+                any questions about these Terms, please contact us at <a href="mailto:1bluevolt@gmail.com"
+                    class="text-cyan-400 hover:text-cyan-300 underline font-semibold transition-colors">1bluevolt@gmail.com</a>.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer
+        class="w-full text-center text-sm text-slate-400 py-10 border-t border-white/10 mt-auto relative z-10 bg-slate-900/50 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto flex flex-col items-center">
+            <img src="BlueVolt Logo.png" alt="BlueVolt Icon"
+                class="w-10 h-10 opacity-50 mb-4 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">
+            <p>&copy; 2026 BlueVolt Studio. All rights reserved.</p>
+            <p class="mt-2 text-xs opacity-60">Authorized App-Ads.txt domain</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Scroll Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger once on load
+
+        // Canvas Particles Background
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height, particles;
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+
+            const particleCount = Math.min(Math.floor(window.innerWidth / 15), 120);
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 2.5 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    opacity: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, width, height);
+
+            // First pass: update positions and draw lines
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Wrap around edges
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                // Connect particles with lines
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let distSq = dx * dx + dy * dy;
+
+                    // 15000 is approx (122px)^2
+                    if (distSq < 15000) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 242, 254, ${0.15 * (1 - distSq / 15000)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Second pass: draw particles with glow
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 242, 254, ${p.opacity})`;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#00f2fe';
+                ctx.fill();
+            }
+
+            // Reset shadow so lines don't get blurred on next frame
+            ctx.shadowBlur = 0;
+        }
+
+        window.addEventListener('resize', init);
+
+        // Start animation
+        init();
+        animate();
+    </script>
+</body>
+
+</html>
