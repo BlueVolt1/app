@@ -336,7 +336,7 @@
         </section>
 
         <footer>
-            Checked every 5 minutes from outside our network.
+            Checked every 30 minutes from outside our network.
         </footer>
     </main>
 
@@ -345,16 +345,18 @@
             "use strict";
 
             // Read from the raw endpoint rather than from this site: the uptime workflow
-            // force-pushes the file to an orphan branch, so publishing 288 times a day never
+            // force-pushes the file to an orphan branch, so publishing 48 times a day never
             // touches the branch Pages builds from. raw.githubusercontent.com serves it with
-            // Access-Control-Allow-Origin: * and caches it for about five minutes, which is
-            // the same resolution the monitor runs at.
+            // Access-Control-Allow-Origin: * and caches it for about five minutes.
             var STATUS_URL = "https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json";
 
-            // A monitor that stopped reporting must never render as green. Five-minute schedule,
-            // plus GitHub's cron slippage, plus the raw CDN cache: past this the page says it
-            // does not know rather than implying everything is fine.
-            var STALE_MS = 20 * 60 * 1000;
+            // A monitor that stopped reporting must never render as green - but this threshold
+            // has to clear the monitor's own interval or the page calls itself stale forever.
+            // The workflow runs at :07 and :37, so a reading is routinely 30 minutes old before
+            // the next one lands, and the raw CDN can hold a stale copy ~5 minutes on top. 75
+            // minutes is two missed runs plus that cache, so a single dropped cron - which
+            // GitHub does regularly - reads as normal, and two in a row reads as broken.
+            var STALE_MS = 75 * 60 * 1000;
 
             var DAYS = 90;
 

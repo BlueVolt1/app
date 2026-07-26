@@ -498,7 +498,9 @@
             fetch("https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json", { cache: "no-store" })
                 .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
                 .then(function (data) {
-                    if (Date.now() - Date.parse(data.updatedAt) > 20 * 60 * 1000) { return; }
+                    // Must match STALE_MS in /status: two missed 30-minute runs plus the raw
+                    // CDN cache. A shorter window here would hide the pill permanently.
+                    if (Date.now() - Date.parse(data.updatedAt) > 75 * 60 * 1000) { return; }
 
                     var down = (data.services || []).filter(function (s) { return s.status !== "ok"; });
                     var dot = document.getElementById("status-pill-dot");
