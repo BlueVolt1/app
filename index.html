@@ -479,6 +479,12 @@
         <div class="max-w-5xl mx-auto flex flex-col items-center">
             <img src="BlueVolt Logo.png" alt="BlueVolt Icon"
                 class="w-10 h-10 opacity-50 mb-4 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">
+            <!-- Populated by the status script below; stays hidden unless the feed answers. -->
+            <a id="status-pill" href="status/" hidden
+                class="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border border-white/10 bg-white/5 hover:border-cyan-400/60 transition-colors">
+                <span id="status-pill-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                <span id="status-pill-text">Service status</span>
+            </a>
             <p>&copy; 2026 BlueVolt Studio. All rights reserved.</p>
             <p class="mt-2 text-xs opacity-60">Authorized App-Ads.txt domain</p>
         </div>
@@ -486,6 +492,25 @@
 
     <!-- Scripts -->
     <script>
+        // Footer status pill. Reads the same feed as /status, and stays hidden on any failure
+        // or stale reading - a landing page should never announce an outage it is not sure of.
+        (function () {
+            fetch("https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json", { cache: "no-store" })
+                .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+                .then(function (data) {
+                    if (Date.now() - Date.parse(data.updatedAt) > 20 * 60 * 1000) { return; }
+
+                    var down = (data.services || []).filter(function (s) { return s.status !== "ok"; });
+                    var dot = document.getElementById("status-pill-dot");
+
+                    dot.className = "w-2 h-2 rounded-full " + (down.length ? "bg-red-500" : "bg-green-500");
+                    document.getElementById("status-pill-text").textContent =
+                        down.length ? "Service disruption" : "All systems normal";
+                    document.getElementById("status-pill").hidden = false;
+                })
+                .catch(function () { /* feed unreachable: leave the pill hidden */ });
+        })();
+
         // Scroll Reveal Animation
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");

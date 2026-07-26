@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Live service status for Gym High Bar.">
+    <meta name="robots" content="noindex">
+    <title>Status | Gym High Bar</title>
+    <link rel="icon" href="../BlueVolt Logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon: #00f2fe;
+            --ok: #22c55e;
+            --down: #ef4444;
+            --warn: #f59e0b;
+            --unknown: #475569;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(-45deg, #020617, #0f172a, #0b1120, #083344);
+            background-size: 400% 400%;
+            animation: bgPulse 15s ease infinite;
+            color: var(--text);
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        main {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+        }
+
+        a {
+            color: #22d3ee;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        header h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        header .back {
+            margin-left: auto;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: var(--muted);
+        }
+
+        header .back:hover {
+            color: var(--neon);
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Overall banner */
+        #banner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 22px 24px;
+            margin-bottom: 26px;
+            border-left: 4px solid var(--unknown);
+        }
+
+        #banner.ok { border-left-color: var(--ok); }
+        #banner.down { border-left-color: var(--down); }
+        #banner.stale { border-left-color: var(--warn); }
+
+        #banner .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--unknown);
+            flex: none;
+        }
+
+        #banner.ok .dot { background: var(--ok); box-shadow: 0 0 12px var(--ok); }
+        #banner.down .dot { background: var(--down); box-shadow: 0 0 12px var(--down); }
+        #banner.stale .dot { background: var(--warn); box-shadow: 0 0 12px var(--warn); }
+
+        #banner .headline {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        #banner .sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        /* Service rows */
+        .service {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .service:first-child {
+            border-top: none;
+        }
+
+        .service-head {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .service-head .name {
+            font-weight: 600;
+        }
+
+        .service-head .state {
+            margin-left: auto;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .state.ok { color: var(--ok); }
+        .state.down { color: var(--down); }
+        .state.unknown { color: var(--muted); }
+
+        .bars {
+            display: flex;
+            gap: 2px;
+            height: 30px;
+            align-items: stretch;
+        }
+
+        .bars .bar {
+            flex: 1 1 0;
+            min-width: 2px;
+            border-radius: 2px;
+            background: var(--unknown);
+            opacity: 0.35;
+        }
+
+        .bars .bar.ok { background: var(--ok); opacity: 0.85; }
+        .bars .bar.partial { background: var(--warn); opacity: 0.9; }
+        .bars .bar.down { background: var(--down); opacity: 0.9; }
+
+        .bars-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* Detail panel */
+        #detail {
+            margin-top: 26px;
+            padding: 22px 24px;
+        }
+
+        #detail h2 {
+            font-size: 0.95rem;
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        #detail .hint {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin: 0 0 16px;
+        }
+
+        .kv {
+            display: grid;
+            grid-template-columns: minmax(140px, auto) 1fr;
+            gap: 8px 18px;
+            font-size: 0.86rem;
+        }
+
+        .kv dt {
+            color: var(--muted);
+        }
+
+        .kv dd {
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .kv dd.bad { color: var(--down); }
+        .kv dd.warn { color: var(--warn); }
+        .kv dd.good { color: var(--ok); }
+
+        form.config {
+            display: grid;
+            gap: 10px;
+            max-width: 420px;
+        }
+
+        form.config label {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        form.config input {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font: inherit;
+            font-size: 0.86rem;
+        }
+
+        form.config input:focus {
+            outline: none;
+            border-color: rgba(0, 242, 254, 0.6);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            border-color: rgba(0, 242, 254, 0.6);
+            background: rgba(6, 182, 212, 0.15);
+        }
+
+        button.link {
+            border: none;
+            background: none;
+            padding: 0;
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-decoration: underline;
+        }
+
+        button.link:hover {
+            background: none;
+            color: var(--neon);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <header>
+            <img src="../BlueVolt Logo.png" alt="">
+            <h1>Gym High Bar Status</h1>
+            <a class="back" href="../">&larr; bluevoltstudio.com</a>
+        </header>
+
+        <section id="banner" class="panel">
+            <span class="dot"></span>
+            <div>
+                <div class="headline" id="banner-headline">Loading&hellip;</div>
+                <div class="sub" id="banner-sub"></div>
+            </div>
+        </section>
+
+        <section class="panel" id="services"></section>
+
+        <!--
+            Operator panel. Hidden for everyone by default and populated only from a host that
+            this browser was explicitly told about via #config. Nothing about the internal
+            network is committed to this file.
+        -->
+        <section class="panel" id="detail" hidden>
+            <h2>Live detail</h2>
+            <p class="hint" id="detail-hint"></p>
+            <div id="detail-body"></div>
+            <div class="buttons" id="detail-buttons" hidden>
+                <button type="button" id="detail-refresh">Refresh</button>
+                <button type="button" class="link" id="detail-forget">Forget this device</button>
+            </div>
+        </section>
+
+        <footer>
+            Checked every 5 minutes from outside our network.
+        </footer>
+    </main>
+
+    <script>
+        (function () {
+            "use strict";
+
+            // Read from the raw endpoint rather than from this site: the uptime workflow
+            // force-pushes the file to an orphan branch, so publishing 288 times a day never
+            // touches the branch Pages builds from. raw.githubusercontent.com serves it with
+            // Access-Control-Allow-Origin: * and caches it for about five minutes, which is
+            // the same resolution the monitor runs at.
+            var STATUS_URL = "https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json";
+
+            // A monitor that stopped reporting must never render as green. Five-minute schedule,
+            // plus GitHub's cron slippage, plus the raw CDN cache: past this the page says it
+            // does not know rather than implying everything is fine.
+            var STALE_MS = 20 * 60 * 1000;
+
+            var DAYS = 90;
+
+            var el = function (id) { return document.getElementById(id); };
+
+            function text(tag, className, content) {
+                var node = document.createElement(tag);
+                if (className) { node.className = className; }
+                if (content !== undefined) { node.textContent = content; }
+                return node;
+            }
+
+            // ---------------------------------------------------------------------------
+            // Public status
+            // ---------------------------------------------------------------------------
+
+            function renderBanner(state, sub) {
+                var banner = el("banner");
+                banner.className = "panel " + state.kind;
+                el("banner-headline").textContent = state.headline;
+                el("banner-sub").textContent = sub || "";
+            }
+
+            function dayClass(bucket) {
+                if (!bucket) { return ""; }
+                var total = bucket.ok + bucket.fail;
+                if (total === 0) { return ""; }
+                if (bucket.fail === 0) { return "ok"; }
+                if (bucket.ok === 0) { return "down"; }
+                return "partial";
+            }
+
+            function renderService(service, history, stale) {
+                var row = text("div", "service");
+
+                var head = text("div", "service-head");
+                head.appendChild(text("span", "name", service.name));
+
+                var stateClass = stale ? "unknown" : service.status;
+                var stateLabel = stale ? "Unknown" : (service.status === "ok" ? "Operational" : "Down");
+                head.appendChild(text("span", "state " + stateClass, stateLabel));
+                row.appendChild(head);
+
+                // Right-align the history against today so the newest bar is always last, and
+                // pad the left with blanks when there is less than 90 days of data.
+                var byDate = {};
+                var ok = 0;
+                var total = 0;
+                (history || []).forEach(function (d) {
+                    byDate[d.date] = d;
+                    ok += d.ok;
+                    total += d.ok + d.fail;
+                });
+
+                var bars = text("div", "bars");
+                var today = new Date();
+                for (var i = DAYS - 1; i >= 0; i--) {
+                    var day = new Date(Date.UTC(
+                        today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - i));
+                    var key = day.toISOString().slice(0, 10);
+                    var bucket = byDate[key];
+                    var bar = text("div", "bar " + dayClass(bucket));
+                    bar.title = bucket
+                        ? key + " — " + Math.round(bucket.ok * 100 / (bucket.ok + bucket.fail)) + "% up"
+                        : key + " — no data";
+                    bars.appendChild(bar);
+                }
+                row.appendChild(bars);
+
+                var legend = text("div", "bars-legend");
+                legend.appendChild(text("span", null, DAYS + " days ago"));
+                legend.appendChild(text("span", null,
+                    total > 0 ? (Math.round(ok * 1000 / total) / 10) + "% uptime" : "no data yet"));
+                legend.appendChild(text("span", null, "today"));
+                row.appendChild(legend);
+
+                return row;
+            }
+
+            function renderStatus(data) {
+                var updated = Date.parse(data.updatedAt);
+                var stale = !isFinite(updated) || (Date.now() - updated) > STALE_MS;
+                var services = data.services || [];
+
+                var container = el("services");
+                container.textContent = "";
+                services.forEach(function (s) {
+                    container.appendChild(renderService(s, (data.history || {})[s.id], stale));
+                });
+
+                var down = services.filter(function (s) { return s.status !== "ok"; });
+
+                if (stale) {
+                    renderBanner(
+                        { kind: "stale", headline: "Status is out of date" },
+                        "The monitor has not reported recently, so this page cannot say whether "
+                        + "services are healthy. Last report: " + formatWhen(updated) + ".");
+                } else if (down.length === 0) {
+                    renderBanner(
+                        { kind: "ok", headline: "All systems operational" },
+                        "Last checked " + formatWhen(updated) + ".");
+                } else {
+                    renderBanner(
+                        { kind: "down", headline: down.length === 1
+                            ? down[0].name + " is down"
+                            : down.length + " services are down" },
+                        "Last checked " + formatWhen(updated) + ".");
+                }
+            }
+
+            function formatWhen(ms) {
+                if (!isFinite(ms)) { return "unknown"; }
+                var mins = Math.round((Date.now() - ms) / 60000);
+                if (mins < 1) { return "just now"; }
+                if (mins < 60) { return mins + " min ago"; }
+                var hours = Math.round(mins / 60);
+                if (hours < 24) { return hours + (hours === 1 ? " hour ago" : " hours ago"); }
+                return new Date(ms).toLocaleString();
+            }
+
+            function loadStatus() {
+                fetch(STATUS_URL, { cache: "no-store" })
+                    .then(function (r) {
+                        if (!r.ok) { throw new Error("HTTP " + r.status); }
+                        return r.json();
+                    })
+                    .then(renderStatus)
+                    .catch(function () {
+                        renderBanner(
+                            { kind: "stale", headline: "Status is unavailable" },
+                            "The status feed could not be reached. This says nothing about the "
+                            + "services themselves.");
+                    });
+            }
+
+            // ---------------------------------------------------------------------------
+            // Operator detail
+            //
+            // The security boundary here is the network, not this code. Everything below ships
+            // to every visitor and is readable in devtools; what a visitor does not have is a
+            // route to the host, so the fetch simply never completes for them. Consequently the
+            // host is not baked into this file - it is typed once per device and kept in
+            // localStorage, which also means no stranger's browser ever emits a request to it.
+            // ---------------------------------------------------------------------------
+
+            var HOST_KEY = "ghb.detail.host";
+            var API_KEY = "ghb.detail.key";
+
+            function store() {
+                try {
+                    return {
+                        host: localStorage.getItem(HOST_KEY) || "",
+                        key: localStorage.getItem(API_KEY) || ""
+                    };
+                } catch (e) {
+                    return { host: "", key: "" };
+                }
+            }
+
+            function normalizeHost(raw) {
+                var host = String(raw || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
+                // Host and optional port only. Anything else would be a path or query smuggled
+                // into the URL this page is about to build.
+                return /^[A-Za-z0-9._-]+(:\d{1,5})?$/.test(host) ? host : "";
+            }
+
+            function showConfigForm() {
+                var current = store();
+                var panel = el("detail");
+                var body = el("detail-body");
+
+                panel.hidden = false;
+                el("detail-hint").textContent =
+                    "Point this browser at a health endpoint it can reach. Stored on this device "
+                    + "only; the page never sends it anywhere else.";
+                el("detail-buttons").hidden = true;
+                body.textContent = "";
+
+                var form = document.createElement("form");
+                form.className = "config";
+
+                var hostLabel = text("label", null, "Host");
+                var hostInput = document.createElement("input");
+                hostInput.type = "text";
+                hostInput.placeholder = "machine.tailnet.ts.net";
+                hostInput.autocomplete = "off";
+                hostInput.spellcheck = false;
+                hostInput.value = current.host;
+                hostLabel.appendChild(hostInput);
+
+                var keyLabel = text("label", null, "Internal API key");
+                var keyInput = document.createElement("input");
+                keyInput.type = "password";
+                keyInput.autocomplete = "off";
+                keyInput.value = current.key;
+                keyLabel.appendChild(keyInput);
+
+                var buttons = text("div", "buttons");
+                var save = text("button", null, "Save");
+                save.type = "submit";
+                buttons.appendChild(save);
+
+                form.appendChild(hostLabel);
+                form.appendChild(keyLabel);
+                form.appendChild(buttons);
+
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    var host = normalizeHost(hostInput.value);
+                    if (!host) {
+                        el("detail-hint").textContent = "That does not look like a hostname.";
+                        return;
+                    }
+                    try {
+                        localStorage.setItem(HOST_KEY, host);
+                        localStorage.setItem(API_KEY, keyInput.value.trim());
+                    } catch (e) { /* private mode: fall through and just fetch once */ }
+                    if (location.hash === "#config") {
+                        history.replaceState(null, "", location.pathname);
+                    }
+                    loadDetail();
+                });
+
+                body.appendChild(form);
+            }
+
+            function severity(label, value) {
+                if (label === "disk") {
+                    return value < 15 ? "bad" : value < 25 ? "warn" : "good";
+                }
+                return value === "ok" ? "good" : "bad";
+            }
+
+            function pair(list, term, value, className) {
+                list.appendChild(text("dt", null, term));
+                list.appendChild(text("dd", className, value));
+            }
+
+            function renderDetail(data) {
+                var body = el("detail-body");
+                body.textContent = "";
+
+                var list = document.createElement("dl");
+                list.className = "kv";
+
+                var room = data.roomApi || {};
+
+                pair(list, "Overall", data.status || "unknown",
+                    data.status === "ok" ? "good" : data.status === "degraded" ? "warn" : "bad");
+                pair(list, "Environment", data.stage || "unknown");
+                pair(list, "Database", data.db || "unknown", severity("db", data.db));
+
+                if (typeof data.diskFreePercent === "number") {
+                    pair(list, "Disk free", data.diskFreePercent + "%",
+                        severity("disk", data.diskFreePercent));
+                }
+
+                pair(list, "Tunnel", room.tunnel || "unknown", severity("t", room.tunnel));
+                pair(list, "Docker API", room.docker || "unknown", severity("d", room.docker));
+
+                var ports = room.roomPorts;
+                if (ports && typeof ports.total === "number" && ports.total > 0) {
+                    pair(list, "Room ports", ports.inUse + " / " + ports.total,
+                        ports.inUse >= ports.total - 2 ? "warn" : "good");
+                }
+
+                var crashing = room.crashLooping || [];
+                pair(list, "Crash looping",
+                    crashing.length ? crashing.join(", ") : "none",
+                    crashing.length ? "bad" : "good");
+
+                body.appendChild(list);
+
+                el("detail-hint").textContent = "Read live from the host, " + formatWhen(Date.now()) + ".";
+                el("detail-buttons").hidden = false;
+            }
+
+            function loadDetail() {
+                var config = store();
+                if (!config.host) {
+                    // Nothing configured: this browser has never been told a host, so the panel
+                    // does not exist as far as it is concerned.
+                    el("detail").hidden = true;
+                    return;
+                }
+
+                var panel = el("detail");
+                panel.hidden = false;
+                el("detail-hint").textContent = "Connecting…";
+                el("detail-body").textContent = "";
+                el("detail-buttons").hidden = true;
+
+                var timeout = new AbortController();
+                var timer = setTimeout(function () { timeout.abort(); }, 8000);
+
+                fetch("https://" + config.host + "/health/details", {
+                    headers: { "X-Api-Key": config.key },
+                    cache: "no-store",
+                    signal: timeout.signal
+                })
+                    .then(function (r) {
+                        if (r.status === 401 || r.status === 403) {
+                            throw new Error("rejected");
+                        }
+                        if (!r.ok) { throw new Error("HTTP " + r.status); }
+                        return r.json();
+                    })
+                    .then(renderDetail)
+                    .catch(function (error) {
+                        el("detail-hint").textContent = error && error.message === "rejected"
+                            ? "The host answered but rejected the key."
+                            : "Detail unavailable — this device cannot reach the host. "
+                              + "Connect to the network and refresh.";
+                        el("detail-buttons").hidden = false;
+                    })
+                    .finally(function () { clearTimeout(timer); });
+            }
+
+            el("detail-refresh").addEventListener("click", loadDetail);
+            el("detail-forget").addEventListener("click", function () {
+                try {
+                    localStorage.removeItem(HOST_KEY);
+                    localStorage.removeItem(API_KEY);
+                } catch (e) { /* nothing to forget */ }
+                el("detail").hidden = true;
+            });
+
+            window.addEventListener("hashchange", function () {
+                if (location.hash === "#config") { showConfigForm(); }
+            });
+
+            loadStatus();
+            if (location.hash === "#config") {
+                showConfigForm();
+            } else {
+                loadDetail();
+            }
+
+            // The tab is often left open on a wall display; without this it would show a
+            // green banner from hours ago.
+            setInterval(loadStatus, 60 * 1000);
+        })();
+    </script>
+</body>
+
+</html>
