@@ -3,9 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Live service status for Gym High Bar.">
     <meta name="robots" content="noindex">
+    <!-- Safari paints the overscroll area and the toolbar backdrop from these, not from body. -->
+    <meta name="theme-color" content="#020617">
+    <meta name="color-scheme" content="dark">
     <title>Status | Gym High Bar</title>
     <link rel="icon" href="../BlueVolt Logo.png">
 
@@ -28,6 +31,15 @@
             box-sizing: border-box;
         }
 
+        /* The root needs its own dark fill. Body's background propagates to the page canvas
+           only while html has none, and Safari still paints the rubber-band overscroll strips
+           above and below the document from the root - which is white by default. */
+        html {
+            background: #020617;
+            color-scheme: dark;
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
@@ -36,6 +48,7 @@
             background-size: 400% 400%;
             animation: bgPulse 15s ease infinite;
             color: var(--text);
+            -webkit-tap-highlight-color: transparent;
         }
 
         @keyframes bgPulse {
@@ -46,7 +59,10 @@
         main {
             max-width: 820px;
             margin: 0 auto;
-            padding: 48px 20px 80px;
+            padding: clamp(24px, 6vw, 48px) clamp(14px, 4vw, 20px) 64px;
+            /* Keep content clear of the notch when the page is opened in landscape. */
+            padding-left: max(clamp(14px, 4vw, 20px), env(safe-area-inset-left));
+            padding-right: max(clamp(14px, 4vw, 20px), env(safe-area-inset-right));
         }
 
         a {
@@ -56,17 +72,19 @@
         header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 36px;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            margin-bottom: clamp(22px, 5vw, 36px);
         }
 
         header img {
             width: 40px;
             height: 40px;
+            flex: none;
         }
 
         header h1 {
-            font-size: 1.35rem;
+            font-size: clamp(1.05rem, 4.5vw, 1.35rem);
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.01em;
@@ -77,6 +95,7 @@
             font-size: 0.85rem;
             text-decoration: none;
             color: var(--muted);
+            white-space: nowrap;
         }
 
         header .back:hover {
@@ -95,10 +114,10 @@
         /* Overall banner */
         #banner {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 14px;
-            padding: 22px 24px;
-            margin-bottom: 26px;
+            padding: clamp(16px, 4vw, 22px) clamp(16px, 4.5vw, 24px);
+            margin-bottom: clamp(16px, 4vw, 26px);
             border-left: 4px solid var(--unknown);
         }
 
@@ -106,9 +125,12 @@
         #banner.down { border-left-color: var(--down); }
         #banner.stale { border-left-color: var(--warn); }
 
+        /* The sub-line wraps to several lines on a phone, so the dot is pinned to the
+           headline rather than centred against a block whose height varies. */
         #banner .dot {
             width: 12px;
             height: 12px;
+            margin-top: 6px;
             border-radius: 50%;
             background: var(--unknown);
             flex: none;
@@ -131,7 +153,7 @@
 
         /* Service rows */
         .service {
-            padding: 20px 24px;
+            padding: clamp(16px, 4vw, 20px) clamp(16px, 4.5vw, 24px);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
@@ -142,7 +164,8 @@
         .service-head {
             display: flex;
             align-items: baseline;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 4px 10px;
             margin-bottom: 12px;
         }
 
@@ -154,6 +177,7 @@
             margin-left: auto;
             font-size: 0.8rem;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .state.ok { color: var(--ok); }
@@ -167,9 +191,11 @@
             align-items: stretch;
         }
 
+        /* min-width is what makes this safe: below it the row would overflow the panel
+           instead of shrinking, so the day count is trimmed in JS to whatever fits. */
         .bars .bar {
             flex: 1 1 0;
-            min-width: 2px;
+            min-width: 3px;
             border-radius: 2px;
             background: var(--unknown);
             opacity: 0.35;
@@ -182,15 +208,28 @@
         .bars-legend {
             display: flex;
             justify-content: space-between;
+            gap: 8px;
             font-size: 0.7rem;
             color: var(--muted);
             margin-top: 6px;
         }
 
+        .bars-legend span {
+            white-space: nowrap;
+        }
+
+        /* title= tooltips never appear on a touch screen, so a tapped bar reports itself here. */
+        .bar-note {
+            font-size: 0.72rem;
+            color: var(--text);
+            margin-top: 6px;
+            min-height: 1em;
+        }
+
         /* Detail panel */
         #detail {
-            margin-top: 26px;
-            padding: 22px 24px;
+            margin-top: clamp(16px, 4vw, 26px);
+            padding: clamp(16px, 4vw, 22px) clamp(16px, 4.5vw, 24px);
         }
 
         #detail h2 {
@@ -236,15 +275,18 @@
             color: var(--muted);
         }
 
+        /* 16px exactly: iOS Safari zooms the viewport on focus for anything smaller, and it
+           does not zoom back out afterwards. */
         form.config input {
             width: 100%;
-            padding: 9px 12px;
+            padding: 11px 12px;
+            margin-top: 5px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.04);
             color: var(--text);
             font: inherit;
-            font-size: 0.86rem;
+            font-size: 16px;
         }
 
         form.config input:focus {
@@ -254,12 +296,15 @@
 
         .buttons {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 16px;
             margin-top: 4px;
         }
 
         button {
-            padding: 8px 16px;
+            min-height: 44px;
+            padding: 8px 18px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.04);
@@ -270,23 +315,28 @@
             transition: all 0.25s ease;
         }
 
-        button:hover {
-            border-color: rgba(0, 242, 254, 0.6);
-            background: rgba(6, 182, 212, 0.15);
-        }
-
         button.link {
             border: none;
             background: none;
             padding: 0;
+            min-height: 44px;
             color: var(--muted);
             font-size: 0.78rem;
             text-decoration: underline;
         }
 
-        button.link:hover {
-            background: none;
-            color: var(--neon);
+        /* Hover styling is gated so a tap on a touch screen does not leave the button stuck
+           in its hover state until the next tap elsewhere. */
+        @media (hover: hover) {
+            button:hover {
+                border-color: rgba(0, 242, 254, 0.6);
+                background: rgba(6, 182, 212, 0.15);
+            }
+
+            button.link:hover {
+                background: none;
+                color: var(--neon);
+            }
         }
 
         footer {
@@ -298,6 +348,46 @@
 
         [hidden] {
             display: none !important;
+        }
+
+        @media (max-width: 560px) {
+            /* Two columns of key/value at this width leaves the values a few characters wide
+               and wrapping mid-word. */
+            .kv {
+                grid-template-columns: 1fr;
+                gap: 2px 0;
+            }
+
+            .kv dt {
+                margin-top: 10px;
+                font-size: 0.78rem;
+            }
+
+            .kv dt:first-child {
+                margin-top: 0;
+            }
+
+            .bars {
+                height: 34px;
+            }
+
+            .buttons {
+                gap: 10px 14px;
+            }
+
+            .buttons button:not(.link) {
+                flex: 1 1 auto;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body {
+                animation: none;
+            }
+
+            button {
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -358,7 +448,13 @@
             // GitHub does regularly - reads as normal, and two in a row reads as broken.
             var STALE_MS = 75 * 60 * 1000;
 
-            var DAYS = 90;
+            // 90 days is the target, but a bar has to stay wide enough to be a bar. On a phone
+            // the row is ~310px wide, which at 3px plus a 2px gap holds roughly 60 days - so
+            // the window is trimmed to what fits rather than letting the row overflow the panel.
+            var MAX_DAYS = 90;
+            var MIN_DAYS = 14;
+            var BAR_MIN = 3;
+            var BAR_GAP = 2;
 
             var el = function (id) { return document.getElementById(id); };
 
@@ -389,7 +485,26 @@
                 return "partial";
             }
 
-            function renderService(service, history, stale) {
+            // Measured rather than guessed from innerWidth: the panel's own padding is a clamp()
+            // and the row also has to survive a desktop window being dragged narrow.
+            function daysThatFit() {
+                var container = el("services");
+                var probe = text("div", "service");
+                probe.style.visibility = "hidden";
+                container.appendChild(probe);
+
+                var style = window.getComputedStyle(probe);
+                var inner = probe.clientWidth
+                    - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+                container.removeChild(probe);
+
+                if (!isFinite(inner) || inner <= 0) { return MAX_DAYS; }
+
+                var fits = Math.floor((inner + BAR_GAP) / (BAR_MIN + BAR_GAP));
+                return Math.max(MIN_DAYS, Math.min(MAX_DAYS, fits));
+            }
+
+            function renderService(service, history, stale, days) {
                 var row = text("div", "service");
 
                 var head = text("div", "service-head");
@@ -400,51 +515,75 @@
                 head.appendChild(text("span", "state " + stateClass, stateLabel));
                 row.appendChild(head);
 
-                // Right-align the history against today so the newest bar is always last, and
-                // pad the left with blanks when there is less than 90 days of data.
                 var byDate = {};
-                var ok = 0;
-                var total = 0;
-                (history || []).forEach(function (d) {
-                    byDate[d.date] = d;
-                    ok += d.ok;
-                    total += d.ok + d.fail;
-                });
+                (history || []).forEach(function (d) { byDate[d.date] = d; });
 
+                // Right-align the history against today so the newest bar is always last, and
+                // pad the left with blanks when there is less history than the window shows.
+                // Uptime is summed over the same window, so the number always describes the
+                // bars next to it even when the window has been trimmed for a narrow screen.
                 var bars = text("div", "bars");
                 var today = new Date();
-                for (var i = DAYS - 1; i >= 0; i--) {
+                var ok = 0;
+                var total = 0;
+
+                for (var i = days - 1; i >= 0; i--) {
                     var day = new Date(Date.UTC(
                         today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - i));
                     var key = day.toISOString().slice(0, 10);
                     var bucket = byDate[key];
                     var bar = text("div", "bar " + dayClass(bucket));
-                    bar.title = bucket
+                    var label = bucket
                         ? key + " — " + Math.round(bucket.ok * 100 / (bucket.ok + bucket.fail)) + "% up"
                         : key + " — no data";
+                    bar.title = label;
+                    bar.setAttribute("data-label", label);
+                    if (bucket) {
+                        ok += bucket.ok;
+                        total += bucket.ok + bucket.fail;
+                    }
                     bars.appendChild(bar);
                 }
                 row.appendChild(bars);
 
                 var legend = text("div", "bars-legend");
-                legend.appendChild(text("span", null, DAYS + " days ago"));
+                legend.appendChild(text("span", null, days + " days ago"));
                 legend.appendChild(text("span", null,
                     total > 0 ? (Math.round(ok * 1000 / total) / 10) + "% uptime" : "no data yet"));
                 legend.appendChild(text("span", null, "today"));
                 row.appendChild(legend);
 
+                var note = text("div", "bar-note", "");
+                row.appendChild(note);
+
+                bars.addEventListener("click", function (event) {
+                    var label = event.target && event.target.getAttribute
+                        ? event.target.getAttribute("data-label")
+                        : null;
+                    note.textContent = label || "";
+                });
+
                 return row;
             }
 
+            var lastData = null;
+            var renderedDays = 0;
+
             function renderStatus(data) {
+                lastData = data;
+
                 var updated = Date.parse(data.updatedAt);
                 var stale = !isFinite(updated) || (Date.now() - updated) > STALE_MS;
                 var services = data.services || [];
 
                 var container = el("services");
                 container.textContent = "";
+
+                var days = daysThatFit();
+                renderedDays = days;
                 services.forEach(function (s) {
-                    container.appendChild(renderService(s, (data.history || {})[s.id], stale));
+                    container.appendChild(
+                        renderService(s, (data.history || {})[s.id], stale, days));
                 });
 
                 var down = services.filter(function (s) { return s.status !== "ok"; });
@@ -666,10 +805,29 @@
                     })
                     .then(renderDetail)
                     .catch(function (error) {
-                        el("detail-hint").textContent = error && error.message === "rejected"
-                            ? "The host answered but rejected the key."
-                            : "Detail unavailable — this device cannot reach the host. "
-                              + "Connect to the network and refresh.";
+                        // "Answered with an error" and "never answered" are different problems
+                        // with different fixes, and collapsing them into one message sends you
+                        // looking at the network when the host is in fact replying. A 400 here
+                        // is almost always host filtering: ASP.NET Core rejects a Host header
+                        // it does not recognise before routing runs, so the hostname below has
+                        // to be in the API's AllowedHosts.
+                        var message = (error && error.message) || "";
+                        var hint;
+
+                        if (message === "rejected") {
+                            hint = "The host answered but rejected the key.";
+                        } else if (message.indexOf("HTTP ") === 0) {
+                            hint = "The host answered with " + message
+                                 + (message === "HTTP 400"
+                                     ? " — this hostname is probably missing from the API's allowed hosts."
+                                     : ".");
+                        } else {
+                            hint = "Detail unavailable — this device cannot reach the host. "
+                                 + "Check you are on the network, and that the hostname is the "
+                                 + "full name including its domain suffix.";
+                        }
+
+                        el("detail-hint").textContent = hint;
                         el("detail-buttons").hidden = false;
                     })
                     .finally(function () { clearTimeout(timer); });
@@ -694,6 +852,19 @@
             } else {
                 loadDetail();
             }
+
+            // Rotating a phone changes how many days fit. Re-render only when the count
+            // actually changes, so an address-bar hide/show on iOS is not a rebuild.
+            var resizeTimer = null;
+
+            window.addEventListener("resize", function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    if (!lastData) { return; }
+                    if (daysThatFit() === renderedDays) { return; }
+                    renderStatus(lastData);
+                }, 150);
+            });
 
             // The tab is often left open on a wall display; without this it would show a
             // green banner from hours ago.
