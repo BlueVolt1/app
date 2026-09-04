@@ -260,6 +260,15 @@
             font-variant-numeric: tabular-nums;
         }
 
+        h3.host {
+            margin: 22px 0 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
         .kv dd.bad { color: var(--down); }
         .kv dd.warn { color: var(--warn); }
         .kv dd.good { color: var(--ok); }
@@ -741,8 +750,6 @@
                 var list = document.createElement("dl");
                 list.className = "kv";
 
-                var room = data.roomApi || {};
-
                 pair(list, "Overall", data.status || "unknown",
                     data.status === "ok" ? "good" : data.status === "degraded" ? "warn" : "bad");
                 pair(list, "Environment", data.stage || "unknown");
@@ -753,7 +760,51 @@
                         severity("disk", data.diskFreePercent));
                 }
 
-                pair(list, "Tunnel", room.tunnel || "unknown", severity("t", room.tunnel));
+                body.appendChild(list);
+
+                // One section per room host. The fleet is a list even when it holds one host, so
+                // a second host appearing needs no change here - and a host that answered nothing
+                // is shown as a failing host rather than left out, which would read as a smaller,
+                // healthy fleet.
+                var hosts = data.roomHosts || [];
+
+                if (!hosts.length) {
+                    var empty = document.createElement("dl");
+                    empty.className = "kv";
+                    pair(empty, "Room hosts", "none reported", "bad");
+                    body.appendChild(empty);
+                } else {
+                    hosts.forEach(function (host) {
+                        renderHost(body, host);
+                    });
+                }
+
+                el("detail-hint").textContent = "Read live from the host, " + formatWhen(Date.now()) + ".";
+                el("detail-buttons").hidden = false;
+            }
+
+            function renderHost(body, host) {
+                body.appendChild(text("h3", "host", "Room host " + (host.hostId || "unnamed")));
+
+                var list = document.createElement("dl");
+                list.className = "kv";
+
+                if (!host.reachable || !host.details) {
+                    // MainApi could not read this host at all, so every field below it is unknown
+                    // rather than fine. Saying so once is clearer than six "unknown" rows.
+                    pair(list, "Host", "unreachable", "bad");
+                    body.appendChild(list);
+                    return;
+                }
+
+                var room = host.details;
+
+                pair(list, "Status", room.status || "unknown",
+                    room.status === "ok" ? "good" : room.status === "degraded" ? "warn" : "bad");
+                // A host with no tunnel configured is a deliberate setup, not a fault - MainApi
+                // treats it the same way when it decides whether the fleet is degraded.
+                pair(list, "Tunnel", room.tunnel || "unknown",
+                    room.tunnel === "not-configured" ? null : severity("t", room.tunnel));
                 pair(list, "Docker API", room.docker || "unknown", severity("d", room.docker));
 
                 var ports = room.roomPorts;
@@ -768,9 +819,6 @@
                     crashing.length ? "bad" : "good");
 
                 body.appendChild(list);
-
-                el("detail-hint").textContent = "Read live from the host, " + formatWhen(Date.now()) + ".";
-                el("detail-buttons").hidden = false;
             }
 
             function loadDetail() {
