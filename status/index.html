@@ -735,7 +735,53 @@
                 if (label === "disk") {
                     return value < 15 ? "bad" : value < 25 ? "warn" : "good";
                 }
+                if (label === "memory") {
+                    return value < 10 ? "bad" : value < 20 ? "warn" : "good";
+                }
+                // Load is per core, so 1.0 means the machine is exactly saturated and anything
+                // above it is work waiting for a core rather than running on one.
+                if (label === "load") {
+                    return value >= 2 ? "bad" : value >= 1 ? "warn" : "good";
+                }
                 return value === "ok" ? "good" : "bad";
+            }
+
+            function formatUptime(minutes) {
+                if (minutes < 60) { return Math.round(minutes) + " min"; }
+                if (minutes < 60 * 24) { return (minutes / 60).toFixed(1) + " h"; }
+                return (minutes / (60 * 24)).toFixed(1) + " days";
+            }
+
+            function appendResourceRows(list, data) {
+                if (typeof data.diskFreePercent === "number") {
+                    pair(list, "Disk free", data.diskFreePercent + "%",
+                        severity("disk", data.diskFreePercent));
+                }
+
+                if (typeof data.memoryFreePercent === "number") {
+                    pair(list, "Memory free", data.memoryFreePercent + "%",
+                        severity("memory", data.memoryFreePercent));
+                }
+
+                if (typeof data.loadPerCore === "number") {
+                    pair(list, "CPU load", data.loadPerCore + " per core",
+                        severity("load", data.loadPerCore));
+                }
+
+                var process = data.process;
+                if (!process) { return; }
+
+                pair(list, "API memory", process.memoryMb + " MB"
+                    + (typeof process.memoryPercent === "number"
+                        ? " (" + process.memoryPercent + "% of limit)"
+                        : ""));
+                pair(list, "API uptime", formatUptime(process.uptimeMinutes));
+
+                // A queue that is empty at every poll is the normal state; a persistent one is
+                // thread pool starvation, which otherwise shows up only as unexplained latency.
+                if (process.pendingWorkItems > 0) {
+                    pair(list, "Queued work", process.pendingWorkItems + " items", "warn");
+                }
             }
 
             function pair(list, term, value, className) {
@@ -755,10 +801,7 @@
                 pair(list, "Environment", data.stage || "unknown");
                 pair(list, "Database", data.db || "unknown", severity("db", data.db));
 
-                if (typeof data.diskFreePercent === "number") {
-                    pair(list, "Disk free", data.diskFreePercent + "%",
-                        severity("disk", data.diskFreePercent));
-                }
+                appendResourceRows(list, data);
 
                 body.appendChild(list);
 
@@ -803,6 +846,8 @@
                     room.status === "ok" ? "good" : room.status === "degraded" ? "warn" : "bad");
                 pair(list, "Docker API", room.docker || "unknown", severity("d", room.docker));
 
+                appendResourceRows(list, room);
+
                 var ports = room.roomPorts;
                 if (ports && typeof ports.total === "number" && ports.total > 0) {
                     pair(list, "Room ports", ports.inUse + " / " + ports.total,
@@ -813,6 +858,26 @@
                 pair(list, "Crash looping",
                     crashing.length ? crashing.join(", ") : "none",
                     crashing.length ? "bad" : "good");
+
+                var rooms = room.roomResources;
+                if (rooms && typeof rooms.count === "number") {
+                    pair(list, "Room CPU", rooms.cpuPercent + "% over " + rooms.count
+                        + (rooms.count === 1 ? " room" : " rooms"));
+                    pair(list, "Room memory", rooms.memoryMb + " MB");
+                }
+
+                // A stale sample means the sampler stopped, not that the host is idle, so the age is
+                // shown rather than letting old numbers read as current ones.
+                if (typeof room.resourceSampleAgeSeconds === "number" && room.resourceSampleAgeSeconds > 120) {
+                    pair(list, "Resource sample", Math.round(room.resourceSampleAgeSeconds / 60) + " min old", "warn");
+                }
+
+                (room.containers || []).forEach(function (container) {
+                    if (!container.resources) { return; }
+                    pair(list, container.name,
+                        container.resources.cpuPercent + "% CPU, "
+                        + container.resources.memoryMb + " MB");
+                });
 
                 body.appendChild(list);
             }
