@@ -801,10 +801,6 @@
 
                 pair(list, "Status", room.status || "unknown",
                     room.status === "ok" ? "good" : room.status === "degraded" ? "warn" : "bad");
-                // A host with no tunnel configured is a deliberate setup, not a fault - MainApi
-                // treats it the same way when it decides whether the fleet is degraded.
-                pair(list, "Tunnel", room.tunnel || "unknown",
-                    room.tunnel === "not-configured" ? null : severity("t", room.tunnel));
                 pair(list, "Docker API", room.docker || "unknown", severity("d", room.docker));
 
                 var ports = room.roomPorts;
