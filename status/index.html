@@ -269,6 +269,18 @@
             color: var(--muted);
         }
 
+        .env + .env {
+            margin-top: 26px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        h3.env-name {
+            margin: 0 0 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
         .kv dd.bad { color: var(--down); }
         .kv dd.warn { color: var(--warn); }
         .kv dd.good { color: var(--ok); }
@@ -277,6 +289,21 @@
             display: grid;
             gap: 10px;
             max-width: 420px;
+        }
+
+        form.config fieldset {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 4px 14px 14px;
+            margin: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        form.config legend {
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0 6px;
         }
 
         form.config label {
@@ -652,16 +679,55 @@
 
             var HOST_KEY = "ghb.detail.host";
             var API_KEY = "ghb.detail.key";
+            var ENVS_KEY = "ghb.detail.envs";
+
+            var ENVIRONMENTS = [
+                { id: "production", label: "Production" },
+                { id: "staging", label: "Staging" }
+            ];
 
             function store() {
+                var saved = {};
                 try {
-                    return {
-                        host: localStorage.getItem(HOST_KEY) || "",
-                        key: localStorage.getItem(API_KEY) || ""
-                    };
-                } catch (e) {
-                    return { host: "", key: "" };
+                    saved = JSON.parse(localStorage.getItem(ENVS_KEY) || "{}") || {};
+                } catch (e) { saved = {}; }
+
+                // Before there were environments a single host was stored flat. That host was
+                // production, so it keeps working without the operator retyping anything.
+                if (!saved.production) {
+                    try {
+                        var legacy = localStorage.getItem(HOST_KEY);
+                        if (legacy) {
+                            saved.production = {
+                                host: legacy,
+                                key: localStorage.getItem(API_KEY) || ""
+                            };
+                        }
+                    } catch (e) { /* private mode */ }
                 }
+
+                var config = {};
+                ENVIRONMENTS.forEach(function (env) {
+                    var entry = saved[env.id] || {};
+                    config[env.id] = {
+                        host: normalizeHost(entry.host),
+                        key: String(entry.key || "")
+                    };
+                });
+                return config;
+            }
+
+            function save(config) {
+                try {
+                    localStorage.setItem(ENVS_KEY, JSON.stringify(config));
+                    localStorage.removeItem(HOST_KEY);
+                    localStorage.removeItem(API_KEY);
+                } catch (e) { /* private mode: nothing persists, this session still works */ }
+            }
+
+            // An environment with no host is one that does not exist yet, not one that is down.
+            function configured(config) {
+                return ENVIRONMENTS.filter(function (env) { return !!config[env.id].host; });
             }
 
             function normalizeHost(raw) {
@@ -678,50 +744,76 @@
 
                 panel.hidden = false;
                 el("detail-hint").textContent =
-                    "Point this browser at a health endpoint it can reach. Stored on this device "
-                    + "only; the page never sends it anywhere else.";
+                    "Point this browser at the health endpoints it can reach. Leave an "
+                    + "environment blank to skip it. Stored on this device only; the page never "
+                    + "sends it anywhere else.";
                 el("detail-buttons").hidden = true;
                 body.textContent = "";
 
                 var form = document.createElement("form");
                 form.className = "config";
 
-                var hostLabel = text("label", null, "Host");
-                var hostInput = document.createElement("input");
-                hostInput.type = "text";
-                hostInput.placeholder = "machine.tailnet.ts.net";
-                hostInput.autocomplete = "off";
-                hostInput.spellcheck = false;
-                hostInput.value = current.host;
-                hostLabel.appendChild(hostInput);
+                var inputs = {};
 
-                var keyLabel = text("label", null, "Internal API key");
-                var keyInput = document.createElement("input");
-                keyInput.type = "password";
-                keyInput.autocomplete = "off";
-                keyInput.value = current.key;
-                keyLabel.appendChild(keyInput);
+                ENVIRONMENTS.forEach(function (env) {
+                    var group = document.createElement("fieldset");
+                    group.appendChild(text("legend", null, env.label));
+
+                    var hostLabel = text("label", null, "Host");
+                    var hostInput = document.createElement("input");
+                    hostInput.type = "text";
+                    hostInput.placeholder = "machine.tailnet.ts.net";
+                    hostInput.autocomplete = "off";
+                    hostInput.spellcheck = false;
+                    hostInput.value = current[env.id].host;
+                    hostLabel.appendChild(hostInput);
+
+                    var keyLabel = text("label", null, "Internal API key");
+                    var keyInput = document.createElement("input");
+                    keyInput.type = "password";
+                    keyInput.autocomplete = "off";
+                    keyInput.value = current[env.id].key;
+                    keyLabel.appendChild(keyInput);
+
+                    group.appendChild(hostLabel);
+                    group.appendChild(keyLabel);
+                    form.appendChild(group);
+
+                    inputs[env.id] = { host: hostInput, key: keyInput };
+                });
 
                 var buttons = text("div", "buttons");
-                var save = text("button", null, "Save");
-                save.type = "submit";
-                buttons.appendChild(save);
-
-                form.appendChild(hostLabel);
-                form.appendChild(keyLabel);
+                var submit = text("button", null, "Save");
+                submit.type = "submit";
+                buttons.appendChild(submit);
                 form.appendChild(buttons);
 
                 form.addEventListener("submit", function (event) {
                     event.preventDefault();
-                    var host = normalizeHost(hostInput.value);
-                    if (!host) {
-                        el("detail-hint").textContent = "That does not look like a hostname.";
+
+                    var next = {};
+                    var filled = 0;
+                    var bad = null;
+
+                    ENVIRONMENTS.forEach(function (env) {
+                        var raw = inputs[env.id].host.value.trim();
+                        var host = normalizeHost(raw);
+                        if (raw && !host) { bad = bad || env.label; }
+                        if (host) { filled++; }
+                        next[env.id] = { host: host, key: inputs[env.id].key.value.trim() };
+                    });
+
+                    if (bad) {
+                        el("detail-hint").textContent =
+                            "The " + bad.toLowerCase() + " host does not look like a hostname.";
                         return;
                     }
-                    try {
-                        localStorage.setItem(HOST_KEY, host);
-                        localStorage.setItem(API_KEY, keyInput.value.trim());
-                    } catch (e) { /* private mode: fall through and just fetch once */ }
+                    if (!filled) {
+                        el("detail-hint").textContent = "Fill in at least one environment.";
+                        return;
+                    }
+
+                    save(next);
                     if (location.hash === "#config") {
                         history.replaceState(null, "", location.pathname);
                     }
@@ -789,10 +881,7 @@
                 list.appendChild(text("dd", className, value));
             }
 
-            function renderDetail(data) {
-                var body = el("detail-body");
-                body.textContent = "";
-
+            function renderDetail(data, body) {
                 var list = document.createElement("dl");
                 list.className = "kv";
 
@@ -821,9 +910,6 @@
                         renderHost(body, host);
                     });
                 }
-
-                el("detail-hint").textContent = "Read live from the host, " + formatWhen(Date.now()) + ".";
-                el("detail-buttons").hidden = false;
             }
 
             function renderHost(body, host) {
@@ -884,24 +970,46 @@
 
             function loadDetail() {
                 var config = store();
-                if (!config.host) {
+                var active = configured(config);
+
+                if (!active.length) {
                     // Nothing configured: this browser has never been told a host, so the panel
                     // does not exist as far as it is concerned.
                     el("detail").hidden = true;
                     return;
                 }
 
-                var panel = el("detail");
-                panel.hidden = false;
-                el("detail-hint").textContent = "Connecting…";
-                el("detail-body").textContent = "";
-                el("detail-buttons").hidden = true;
+                var body = el("detail-body");
+                el("detail").hidden = false;
+                el("detail-hint").textContent = active.length === 1
+                    ? "Read live from " + active[0].label.toLowerCase() + "."
+                    : "Read live from " + active.length + " environments.";
+                body.textContent = "";
+                // The environments answer independently and one being unreachable says nothing
+                // about the other, so the buttons are up front rather than after the last reply.
+                el("detail-buttons").hidden = false;
 
+                active.forEach(function (env) {
+                    var section = text("section", "env");
+                    section.appendChild(text("h3", "env-name", env.label));
+
+                    var status = text("p", "hint", "Connecting…");
+                    section.appendChild(status);
+
+                    var content = text("div", null);
+                    section.appendChild(content);
+                    body.appendChild(section);
+
+                    loadEnvironment(config[env.id], status, content);
+                });
+            }
+
+            function loadEnvironment(entry, status, content) {
                 var timeout = new AbortController();
                 var timer = setTimeout(function () { timeout.abort(); }, 8000);
 
-                fetch("https://" + config.host + "/health/details", {
-                    headers: { "X-Api-Key": config.key },
+                fetch("https://" + entry.host + "/health/details", {
+                    headers: { "X-Api-Key": entry.key },
                     cache: "no-store",
                     signal: timeout.signal
                 })
@@ -912,7 +1020,11 @@
                         if (!r.ok) { throw new Error("HTTP " + r.status); }
                         return r.json();
                     })
-                    .then(renderDetail)
+                    .then(function (data) {
+                        status.textContent = entry.host + " — read " + formatWhen(Date.now()) + ".";
+                        content.textContent = "";
+                        renderDetail(data, content);
+                    })
                     .catch(function (error) {
                         // "Answered with an error" and "never answered" are different problems
                         // with different fixes, and collapsing them into one message sends you
@@ -936,8 +1048,8 @@
                                  + "full name including its domain suffix.";
                         }
 
-                        el("detail-hint").textContent = hint;
-                        el("detail-buttons").hidden = false;
+                        status.textContent = entry.host + " — " + hint;
+                        content.textContent = "";
                     })
                     .finally(function () { clearTimeout(timer); });
             }
@@ -945,6 +1057,7 @@
             el("detail-refresh").addEventListener("click", loadDetail);
             el("detail-forget").addEventListener("click", function () {
                 try {
+                    localStorage.removeItem(ENVS_KEY);
                     localStorage.removeItem(HOST_KEY);
                     localStorage.removeItem(API_KEY);
                 } catch (e) { /* nothing to forget */ }
