@@ -1,0 +1,505 @@
+:root {
+    --ok: #22c55e;
+    --apparatus-red: #dc2626;
+    --dim: #475569;
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 20px) 64px;
+    padding-left: max(clamp(16px, 4vw, 20px), env(safe-area-inset-left));
+    padding-right: max(clamp(16px, 4vw, 20px), env(safe-area-inset-right));
+}
+
+.glow {
+    position: fixed;
+    width: 90vmax;
+    height: 90vmax;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.16), transparent 65%);
+    animation: drift 18s ease-in-out infinite alternate;
+}
+
+.glow.top {
+    top: -45vmax;
+    left: -40vmax;
+}
+
+.glow.bottom {
+    bottom: -50vmax;
+    right: -45vmax;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.14), transparent 65%);
+    animation-duration: 24s;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes drift {
+    to { transform: translate(8vmax, 10vmax) scale(1.1); }
+}
+
+.chalk {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.chalk span {
+    position: absolute;
+    bottom: -10px;
+    left: var(--x);
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 0 6px rgba(0, 242, 254, 0.8);
+    opacity: 0;
+    animation: rise var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes rise {
+    10% { opacity: 0.8; }
+    85% { opacity: 0.4; }
+    100% { transform: translate(var(--sway), -105vh); opacity: 0; }
+}
+
+.animate .enter {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--delay, 0s);
+}
+
+.animate .enter.shown {
+    opacity: 1;
+    transform: none;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header img,
+.note img {
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.5));
+}
+
+header img {
+    width: 40px;
+    height: 40px;
+    flex: none;
+}
+
+header .back {
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+header .back:hover {
+    color: var(--neon);
+}
+
+.languages {
+    margin-top: 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: clamp(40px, 12vw, 72px) 0 clamp(28px, 7vw, 44px);
+}
+
+.hero .game {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 10vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: transparent;
+    background: linear-gradient(100deg, #fff 35%, #67e8f9 50%, #fff 65%) 100% 0 / 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 14px rgba(0, 242, 254, 0.35));
+    animation: shimmer 5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    60%, 100% { background-position: 0 0; }
+}
+
+.hero .lead {
+    margin: 14px 0 0;
+    font-size: clamp(1.1rem, 4.5vw, 1.35rem);
+    color: var(--text);
+}
+
+.target {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 13px 21px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1.5px rgba(0, 242, 254, 0.3);
+    font-weight: 600;
+    font-size: clamp(1rem, 4vw, 1.15rem);
+    color: #fff;
+}
+
+.target::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    aspect-ratio: 1;
+    background: conic-gradient(transparent 0 60%, var(--neon) 80%, transparent);
+    transform: translate(-50%, -50%);
+    animation: spin 4s linear infinite;
+}
+
+.target::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 1.5px;
+    border-radius: inherit;
+    background: #071a24;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(1turn); }
+}
+
+.target svg {
+    flex: none;
+    color: var(--neon);
+}
+
+.target-note {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    padding: clamp(20px, 5vw, 28px);
+    margin-bottom: clamp(14px, 4vw, 20px);
+}
+
+.panel h2 {
+    margin: 0;
+    font-size: clamp(1.15rem, 4.8vw, 1.35rem);
+    font-weight: 800;
+    color: #fff;
+}
+
+.rig {
+    position: relative;
+    margin-top: 22px;
+    padding: 36px 12px 0;
+    border-left: 5px solid var(--apparatus-red);
+    border-right: 5px solid var(--apparatus-red);
+}
+
+.rig .bar {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    right: -5px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(#e2e8f0, #64748b);
+}
+
+.rig .fill {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    width: calc(100% * var(--progress, 0));
+    height: 100%;
+    border-radius: 3px;
+    background: var(--neon);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.7);
+    transition: width 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s;
+}
+
+.animate .enter:not(.shown) .fill {
+    width: 0;
+}
+
+.rig .fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    transform: translateX(-100%);
+    animation: shine 2.4s ease-in-out infinite;
+}
+
+@keyframes shine {
+    to { transform: translateX(260%); }
+}
+
+.steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.steps li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--dim);
+}
+
+.steps li:first-child {
+    border-top: none;
+}
+
+.animate .enter .steps li {
+    opacity: 0;
+    transform: translateX(-14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition-delay: calc(0.35s + var(--i, 0) * 0.09s);
+}
+
+.animate .enter.shown .steps li {
+    opacity: 1;
+    transform: none;
+}
+
+.steps .mark {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: none;
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid var(--dim);
+}
+
+.steps .label {
+    font-weight: 600;
+    font-size: 1.02rem;
+}
+
+.steps .state {
+    margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.steps li.done {
+    color: var(--text);
+}
+
+.steps li.done .mark {
+    border-color: var(--ok);
+    background: var(--ok);
+}
+
+.animate .enter.shown .steps li.done .mark {
+    animation: pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+    animation-delay: calc(0.45s + var(--i, 0) * 0.09s);
+}
+
+@keyframes pop {
+    from { transform: scale(0.3); }
+}
+
+.steps li.done .mark::after {
+    content: "";
+    width: 10px;
+    height: 5px;
+    margin-top: -3px;
+    border-left: 2.5px solid #020617;
+    border-bottom: 2.5px solid #020617;
+    transform: rotate(-45deg);
+}
+
+.steps li.done .state {
+    color: var(--ok);
+}
+
+.steps li.now {
+    color: #fff;
+}
+
+.steps li.now .mark {
+    border-color: var(--neon);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+}
+
+.steps li.now .mark::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--neon);
+    animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.35; }
+    to { opacity: 1; }
+}
+
+.steps li.now .mark::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--neon);
+    animation: ripple 1.8s ease-out infinite;
+}
+
+@keyframes ripple {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(1.9); opacity: 0; }
+}
+
+.steps li.now .state {
+    color: var(--neon);
+}
+
+.updated {
+    margin: 12px 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.safe {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.safe svg {
+    flex: none;
+    color: var(--ok);
+}
+
+.safe p,
+.note p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.note {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.note img {
+    width: 48px;
+    height: 48px;
+    flex: none;
+    animation: float 3s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+    to { transform: translateY(-5px); }
+}
+
+.note .lines p {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+.note .signature {
+    margin-top: 12px;
+    font-weight: 600;
+    color: var(--cyan);
+}
+
+.more {
+    margin: clamp(24px, 6vw, 36px) 0 16px;
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--muted);
+}
+
+.follow {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 242, 254, 0.6);
+    background: rgba(6, 182, 212, 0.15);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.follow::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.35), transparent);
+    transform: translateX(-120%);
+    animation: sweep 3.2s ease-in-out infinite;
+}
+
+@keyframes sweep {
+    60%, 100% { transform: translateX(260%); }
+}
+
+.follow:hover {
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+    transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

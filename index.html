@@ -10,12 +10,10 @@
     <meta name="color-scheme" content="dark">
     <title>BlueVolt | Gym High Bar</title>
 
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,7 +21,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'Noto Sans JP', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -37,220 +35,13 @@
         }
     </script>
 
-    <style>
-        /* The root needs its own dark fill. Body's background propagates to the page canvas
-           only while html has none, and Safari still paints the rubber-band overscroll strips
-           above and below the document from the root - which is white by default. */
-        html {
-            background: #020617;
-            color-scheme: dark;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(-45deg, #020617, #0f172a, #0b1120, #083344);
-            background-size: 400% 400%;
-            animation: bgPulse 15s ease infinite;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-
-        @keyframes bgPulse {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-        }
-
-        .glass-panel:hover {
-            border-color: rgba(0, 242, 254, 0.3);
-            box-shadow: 0 10px 40px rgba(0, 242, 254, 0.15);
-        }
-
-        .glass-button {
-            position: relative;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .glass-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.15), transparent);
-            transition: all 0.6s ease;
-        }
-
-        .glass-button:hover::before {
-            left: 100%;
-        }
-
-        .glass-button:hover {
-            background: rgba(6, 182, 212, 0.15);
-            border-color: rgba(0, 242, 254, 0.6);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5), inset 0 0 15px rgba(0, 242, 254, 0.2);
-            transform: translateY(-6px) scale(1.02);
-            z-index: 10;
-        }
-
-        .text-neon {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.5), 0 0 30px rgba(0, 242, 254, 0.3);
-            animation: textPulse 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes textPulse {
-            from {
-                text-shadow: 0 0 10px rgba(0, 242, 254, 0.8), 0 0 20px rgba(0, 242, 254, 0.5);
-            }
-
-            to {
-                text-shadow: 0 0 15px rgba(0, 242, 254, 1), 0 0 30px rgba(0, 242, 254, 0.7), 0 0 45px rgba(0, 242, 254, 0.4);
-            }
-        }
-
-        .text-glow {
-            text-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-        }
-
-        .legal-content h4 {
-            color: #fff;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .legal-content p,
-        .legal-content li {
-            margin-bottom: 1rem;
-            line-height: 1.7;
-            color: #94a3b8;
-            transition: color 0.3s;
-        }
-
-        .legal-content p:hover,
-        .legal-content li:hover {
-            color: #cbd5e1;
-        }
-
-        .legal-content ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .legal-content strong {
-            color: #f1f5f9;
-        }
-
-        /* Scroll Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #020617;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #0f4a66;
-            border-radius: 5px;
-            border: 2px solid #020617;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00f2fe;
-        }
-
-        /* Ambient Blob Animations */
-        @keyframes floatBlob1 {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-        }
-
-        @keyframes floatBlob2 {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(-50px, 30px) scale(1.2);
-            }
-
-            66% {
-                transform: translate(20px, -20px) scale(0.8);
-            }
-
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-        }
-
-        .blob-1 {
-            animation: floatBlob1 20s infinite ease-in-out;
-        }
-
-        .blob-2 {
-            animation: floatBlob2 25s infinite ease-in-out;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/site.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body
     class="min-h-screen antialiased flex flex-col items-center justify-start pt-16 pb-8 px-4 sm:px-6 lg:px-8 relative">
 
-    <!-- Ambient glowing blobs -->
     <div
         class="fixed top-0 left-0 w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full bg-cyan-600/10 blur-[100px] pointer-events-none z-0 blob-1 translate-x-[-20%] translate-y-[-20%]">
     </div>
@@ -258,20 +49,17 @@
         class="fixed bottom-0 right-0 w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] rounded-full bg-blue-700/10 blur-[120px] pointer-events-none z-0 blob-2 translate-x-[20%] translate-y-[20%]">
     </div>
 
-    <!-- Particle Background -->
     <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-    <!-- Main Content Container: Made wider for laptops -->
     <div class="max-w-5xl xl:max-w-6xl mx-auto w-full flex-grow flex flex-col relative z-10">
 
-        <!-- Header -->
+        <div class="languages mb-12" id="languages"></div>
+
         <header class="text-center mb-20 reveal active">
             <div class="inline-block mb-8 relative group cursor-default">
-                <!-- Glowing background effect behind the logo -->
                 <div
                     class="absolute inset-0 bg-brand-cyan/20 rounded-full blur-2xl group-hover:bg-brand-neon/50 transition duration-700 animate-pulse">
                 </div>
-                <!-- Actual Image Logo -->
                 <img src="BlueVolt Logo.png" alt="BlueVolt Logo"
                     class="relative w-36 h-36 md:w-48 md:h-48 object-contain drop-shadow-[0_0_20px_rgba(0,242,254,0.4)] transform group-hover:scale-110 group-hover:rotate-2 transition duration-500 ease-out">
             </div>
@@ -280,14 +68,17 @@
             <h2
                 class="text-3xl sm:text-4xl font-semibold text-cyan-400 opacity-90 tracking-widest uppercase text-glow mt-2">
                 Gym High Bar</h2>
-            <p class="mt-6 text-slate-300 max-w-2xl mx-auto text-lg sm:text-xl leading-relaxed">Push your limits and
-                reach new heights. Welcome to the official hub for BlueVolt Studio.</p>
+            <p class="mt-6 text-slate-300 max-w-2xl mx-auto text-lg sm:text-xl leading-relaxed" data-i18n="tagline">Push
+                your limits and reach new heights. Welcome to the official hub for BlueVolt Studio.</p>
+            <a href="update/"
+                class="glass-button inline-flex items-center gap-3 mt-8 rounded-full px-6 py-3 text-white font-semibold text-lg">
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-neon animate-pulse"></span>
+                <span data-i18n="updateBanner">Next update is on the way &rarr;</span>
+            </a>
         </header>
 
-        <!-- Links Grid (7 Buttons Symmetrical Layout) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-24 w-full reveal">
+        <div id="links" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 mb-24 w-full reveal">
 
-            <!-- App Store -->
             <a href="https://apps.apple.com/ca/app/gym-high-bar/id6449169917" target="_blank" rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
@@ -298,7 +89,6 @@
                 <span>App Store</span>
             </a>
 
-            <!-- Google Play -->
             <a href="https://play.google.com/store/apps/details?id=com.bluevolt.gymhighbar" target="_blank"
                 rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
@@ -310,7 +100,6 @@
                 <span>Google Play</span>
             </a>
 
-            <!-- Discord -->
             <a href="https://discord.com/invite/ff4nxUPhpG" target="_blank" rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
@@ -321,7 +110,6 @@
                 <span>Discord</span>
             </a>
 
-            <!-- Instagram -->
             <a href="https://www.instagram.com/_bluevolt_/" target="_blank" rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
@@ -334,7 +122,6 @@
                 <span>Instagram</span>
             </a>
 
-            <!-- TikTok -->
             <a href="https://www.tiktok.com/@bluevolt_" target="_blank" rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
@@ -345,7 +132,6 @@
                 <span>TikTok</span>
             </a>
 
-            <!-- YouTube -->
             <a href="https://www.youtube.com/@BlueVoIt" target="_blank" rel="noopener noreferrer"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-1 lg:col-span-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor"
@@ -356,7 +142,6 @@
                 <span>YouTube</span>
             </a>
 
-            <!-- Email (Centered on small screens) -->
             <a href="mailto:1bluevolt@gmail.com"
                 class="glass-button rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-white font-semibold group text-lg h-36 sm:col-span-2 lg:col-span-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
@@ -369,11 +154,12 @@
             </a>
         </div>
 
-        <!-- Privacy Policy -->
         <div class="glass-panel rounded-3xl p-8 sm:p-12 mb-12 legal-content reveal">
             <h3
                 class="text-3xl sm:text-4xl font-bold text-white mb-8 border-b border-cyan-500/30 pb-6 text-glow inline-block">
-                Privacy Policy</h3>
+                <span data-i18n="privacyTitle">Privacy Policy</span></h3>
+
+            <p class="legal-note" data-i18n="legalNote"></p>
 
             <p class="text-sm opacity-80 mb-8 tracking-wider uppercase"><strong>Effective Date:</strong> September 11,
                 2026</p>
@@ -513,11 +299,12 @@
                 and age information.</p>
         </div>
 
-        <!-- Terms of Service -->
         <div class="glass-panel rounded-3xl p-8 sm:p-12 mb-20 legal-content reveal">
             <h3
                 class="text-3xl sm:text-4xl font-bold text-white mb-8 border-b border-cyan-500/30 pb-6 text-glow inline-block">
-                Terms of Service</h3>
+                <span data-i18n="termsTitle">Terms of Service</span></h3>
+
+            <p class="legal-note" data-i18n="legalNote"></p>
 
             <p class="text-sm opacity-80 mb-8 tracking-wider uppercase"><strong>Effective Date:</strong> June 12, 2026
             </p>
@@ -567,143 +354,25 @@
 
     </div>
 
-    <!-- Footer -->
     <footer
         class="w-full text-center text-sm text-slate-400 py-10 border-t border-white/10 mt-auto relative z-10 bg-slate-900/50 backdrop-blur-md">
         <div class="max-w-5xl mx-auto flex flex-col items-center">
             <img src="BlueVolt Logo.png" alt="BlueVolt Icon"
                 class="w-10 h-10 opacity-50 mb-4 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">
-            <!-- Populated by the status script below; stays hidden unless the feed answers. -->
+            <!-- Populated by script.js; stays hidden unless the feed answers. -->
             <a id="status-pill" href="status/" hidden
                 class="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border border-white/10 bg-white/5 hover:border-cyan-400/60 transition-colors">
                 <span id="status-pill-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-                <span id="status-pill-text">Service status</span>
+                <span id="status-pill-text" data-i18n="statusDefault">Service status</span>
             </a>
-            <p>&copy; 2026 BlueVolt Studio. All rights reserved.</p>
+            <p data-i18n="copyright">&copy; 2026 BlueVolt Studio. All rights reserved.</p>
             <p class="mt-2 text-xs opacity-60">Authorized App-Ads.txt domain</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // Footer status pill. Reads the same feed as /status, and stays hidden on any failure
-        // or stale reading - a landing page should never announce an outage it is not sure of.
-        (function () {
-            fetch("https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json", { cache: "no-store" })
-                .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-                .then(function (data) {
-                    // Must match STALE_MS in /status: two missed 30-minute runs plus the raw
-                    // CDN cache. A shorter window here would hide the pill permanently.
-                    if (Date.now() - Date.parse(data.updatedAt) > 75 * 60 * 1000) { return; }
-
-                    var down = (data.services || []).filter(function (s) { return s.status !== "ok"; });
-                    var dot = document.getElementById("status-pill-dot");
-
-                    dot.className = "w-2 h-2 rounded-full " + (down.length ? "bg-red-500" : "bg-green-500");
-                    document.getElementById("status-pill-text").textContent =
-                        down.length ? "Service disruption" : "All systems normal";
-                    document.getElementById("status-pill").hidden = false;
-                })
-                .catch(function () { /* feed unreachable: leave the pill hidden */ });
-        })();
-
-        // Scroll Reveal Animation
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        }
-        window.addEventListener("scroll", reveal);
-        reveal(); // Trigger once on load
-
-        // Canvas Particles Background
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-
-        let width, height, particles;
-
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-
-            const particleCount = Math.min(Math.floor(window.innerWidth / 15), 120);
-
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 2.5 + 0.5,
-                    vx: (Math.random() - 0.5) * 0.6,
-                    vy: (Math.random() - 0.5) * 0.6,
-                    opacity: Math.random() * 0.5 + 0.1
-                });
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, width, height);
-
-            // First pass: update positions and draw lines
-            for (let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-
-                p.x += p.vx;
-                p.y += p.vy;
-
-                // Wrap around edges
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-                if (p.y < 0) p.y = height;
-                if (p.y > height) p.y = 0;
-
-                // Connect particles with lines
-                for (let j = i + 1; j < particles.length; j++) {
-                    let p2 = particles[j];
-                    let dx = p.x - p2.x;
-                    let dy = p.y - p2.y;
-                    let distSq = dx * dx + dy * dy;
-
-                    // 15000 is approx (122px)^2
-                    if (distSq < 15000) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(0, 242, 254, ${0.15 * (1 - distSq / 15000)})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // Second pass: draw particles with glow
-            for (let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 242, 254, ${p.opacity})`;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#00f2fe';
-                ctx.fill();
-            }
-
-            // Reset shadow so lines don't get blurred on next frame
-            ctx.shadowBlur = 0;
-        }
-
-        window.addEventListener('resize', init);
-
-        // Start animation
-        init();
-        animate();
-    </script>
+    <script src="assets/language.js"></script>
+    <script src="strings.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

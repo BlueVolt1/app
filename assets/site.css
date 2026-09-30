@@ -1,0 +1,83 @@
+:root {
+    --neon: #00f2fe;
+    --cyan: #22d3ee;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* The root needs its own dark fill. Body's background propagates to the page canvas
+   only while html has none, and Safari still paints the rubber-band overscroll strips
+   above and below the document from the root - which is white by default. */
+html {
+    background: #020617;
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+    background: linear-gradient(-45deg, #020617, #0f172a, #0b1120, #083344);
+    background-size: 400% 400%;
+    animation: bgPulse 15s ease infinite;
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes bgPulse {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.languages {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.languages svg {
+    flex: none;
+    color: var(--muted);
+}
+
+.languages button {
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.languages button[aria-pressed="true"] {
+    color: #fff;
+    border-color: rgba(0, 242, 254, 0.6);
+    background: rgba(6, 182, 212, 0.15);
+}
+
+.swap [data-i18n] {
+    animation: swap 0.4s ease;
+}
+
+@keyframes swap {
+    from { opacity: 0; transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body,
+    .swap [data-i18n] {
+        animation: none;
+    }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="A big update for Gym High Bar is on the way.">
+    <meta name="theme-color" content="#020617">
+    <meta name="color-scheme" content="dark">
+    <meta property="og:title" content="Gym High Bar - Next Update">
+    <meta property="og:description" content="A big update is on the way.">
+    <meta property="og:image" content="https://app.bluevoltstudio.com/BlueVolt%20Logo.png">
+    <meta property="og:url" content="https://app.bluevoltstudio.com/update/">
+    <title>Next Update | Gym High Bar</title>
+    <script>
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            document.documentElement.classList.add("animate");
+        }
+    </script>
+    <link rel="icon" href="../BlueVolt Logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/site.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="glow top"></div>
+    <div class="glow bottom"></div>
+    <div class="chalk" id="chalk"></div>
+
+    <main>
+        <header>
+            <img src="../BlueVolt Logo.png" alt="">
+            <a class="back" href="../">&larr; BlueVolt</a>
+        </header>
+
+        <div class="languages" id="languages"></div>
+
+        <section class="hero">
+            <p class="game enter">Gym High Bar</p>
+            <h1 class="enter" style="--delay: 0.08s" data-i18n="title">Next Update</h1>
+            <p class="lead enter" style="--delay: 0.16s" data-i18n="lead">A big update is on the way.</p>
+            <div class="target enter" style="--delay: 0.24s">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="4" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                <span data-i18n="target">Aiming for October 2026</span>
+            </div>
+            <p class="target-note enter" style="--delay: 0.3s" data-i18n="targetNote">Not a promise. The date could move a little.</p>
+        </section>
+
+        <section class="panel enter">
+            <h2 data-i18n="progress">How the update is going</h2>
+            <div class="rig" id="rig">
+                <span class="bar"><span class="fill"></span></span>
+                <ol class="steps" id="steps">
+                    <li><span class="mark"></span><span class="label" data-i18n="stepMaking">Making the update</span><span class="state"></span></li>
+                    <li><span class="mark"></span><span class="label" data-i18n="stepOnline">Online features</span><span class="state"></span></li>
+                    <li><span class="mark"></span><span class="label" data-i18n="stepServers">New servers</span><span class="state"></span></li>
+                    <li><span class="mark"></span><span class="label" data-i18n="stepTrailer">Trailer and pictures</span><span class="state"></span></li>
+                    <li><span class="mark"></span><span class="label" data-i18n="stepReview">Apple &amp; Google check it</span><span class="state"></span></li>
+                    <li><span class="mark"></span><span class="label" data-i18n="stepOut">Out!</span><span class="state"></span></li>
+                </ol>
+            </div>
+            <p class="updated" id="updated"></p>
+        </section>
+
+        <section class="panel note enter">
+            <img src="../BlueVolt Logo.png" alt="">
+            <div class="lines">
+                <p data-i18n="note1">I'm building this update on my own, and it's almost ready.</p>
+                <p data-i18n="note2">I'll share the release day as soon as I know it.</p>
+                <p data-i18n="note3">Follow me with the button below so you don't miss any news!</p>
+                <p data-i18n="note4">Thank you for waiting and for supporting me! ❤️</p>
+                <div class="signature">- BlueVolt</div>
+            </div>
+        </section>
+
+        <section class="panel safe enter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="m9 12 2 2 4-4" />
+            </svg>
+            <div>
+                <h2 data-i18n="safeTitle">Your progress comes with you</h2>
+                <p data-i18n="safeText">Your account and everything you unlocked carry over to the update.</p>
+            </div>
+        </section>
+
+        <p class="more enter" data-i18n="more">More news soon 👀</p>
+        <a class="follow enter" href="../#links" data-i18n="follow">Follow for news</a>
+    </main>
+
+    <script src="../assets/language.js"></script>
+    <script src="strings.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
