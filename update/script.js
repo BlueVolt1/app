@@ -1,8 +1,9 @@
 (function () {
     "use strict";
 
-    var STEP_STATES = ["done", "done", "now", "now", "next", "next"];
-    var UPDATED = "2026-09-30";
+    var STEP_STATES = ["done", "done", "half", "half", "next", "next"];
+    var STEP_WEIGHTS = { done: 1, half: 0.5, now: 0.25, next: 0 };
+    var UPDATED = "2026-10-11";
 
     function formatDate(iso, code) {
         var parts = iso.split("-");
@@ -18,7 +19,7 @@
             steps[i].querySelector(".state").textContent = SiteLanguage.text(STEP_STATES[i]);
         }
 
-        var done = STEP_STATES.filter(function (state) { return state === "done"; }).length;
+        var done = STEP_STATES.reduce(function (sum, state) { return sum + STEP_WEIGHTS[state]; }, 0);
         document.getElementById("rig").style.setProperty("--progress", done / (steps.length - 1));
         document.getElementById("updated").textContent =
             SiteLanguage.text("updated", { date: formatDate(UPDATED, code) });
