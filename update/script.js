@@ -1,9 +1,9 @@
 (function () {
     "use strict";
 
-    var STEP_STATES = ["done", "done", "half", "half", "next", "next"];
+    var STEP_STATES = ["done", "done", "done", "half", "next", "next"];
     var STEP_WEIGHTS = { done: 1, half: 0.5, now: 0.25, next: 0 };
-    var UPDATED = "2026-10-11";
+    var UPDATED = "2026-10-15";
 
     function formatDate(iso, code) {
         var parts = iso.split("-");
