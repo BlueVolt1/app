@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Live service status for Gym High Bar.">
+    <meta name="robots" content="noindex">
+    <!-- Safari paints the overscroll area and the toolbar backdrop from these, not from body. -->
+    <meta name="theme-color" content="#020617">
+    <meta name="color-scheme" content="dark">
+    <title>Status | Gym High Bar</title>
+    <link rel="icon" href="../BlueVolt Logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/site.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main>
+        <header>
+            <img src="../BlueVolt Logo.png" alt="">
+            <h1 data-i18n="heading">Gym High Bar Status</h1>
+            <a class="back" href="../">&larr; bluevoltstudio.com</a>
+        </header>
+
+        <div class="languages" id="languages"></div>
+
+        <section id="banner" class="panel">
+            <span class="dot"></span>
+            <div>
+                <div class="headline" id="banner-headline" data-i18n="loading">Loading&hellip;</div>
+                <div class="sub" id="banner-sub"></div>
+            </div>
+        </section>
+
+        <section class="panel" id="services"></section>
+
+        <!--
+            Operator panel. Hidden for everyone by default and populated only from a host that
+            this browser was explicitly told about via #config. Nothing about the internal
+            network is committed to this file.
+        -->
+        <section class="panel" id="detail" hidden>
+            <h2>Live detail</h2>
+            <p class="hint" id="detail-hint"></p>
+            <div id="detail-body"></div>
+            <div class="buttons" id="detail-buttons" hidden>
+                <button type="button" id="detail-refresh">Refresh</button>
+                <button type="button" class="link" id="detail-forget">Forget this device</button>
+            </div>
+        </section>
+
+        <footer data-i18n="footer">Checked every 30 minutes from outside our network.</footer>
+    </main>
+
+    <script src="../assets/language.js"></script>
+    <script src="strings.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
