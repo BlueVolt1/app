@@ -45,8 +45,7 @@ var STRINGS = {
         unknownTime: "неизвестно",
         footer: "Проверяется каждые 30 минут извне нашей сети.",
         "service:game-services": "Игровые сервисы",
-        "service:platform": "Платформа",
-        "service:legacy": "Старые серверы"
+        "service:platform": "Платформа"
     },
     ja: {
         pageTitle: "ステータス | Gym High Bar",
@@ -71,7 +70,6 @@ var STRINGS = {
         unknownTime: "不明",
         footer: "30分ごとに外部ネットワークから確認しています。",
         "service:game-services": "ゲームサービス",
-        "service:platform": "プラットフォーム",
-        "service:legacy": "旧サーバー"
+        "service:platform": "プラットフォーム"
     }
 };
