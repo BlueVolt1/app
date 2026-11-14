@@ -5,7 +5,7 @@
     // force-pushes the file to an orphan branch, so publishing 48 times a day never
     // touches the branch Pages builds from. raw.githubusercontent.com serves it with
     // Access-Control-Allow-Origin: * and caches it for about five minutes.
-    var STATUS_URL = "https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json";
+    var STATUS_URL = "https://raw.githubusercontent.com/BlueVolt1/Website/status-data/status.json";
 
     // A monitor that stopped reporting must never render as green - but this threshold
     // has to clear the monitor's own interval or the page calls itself stale forever.

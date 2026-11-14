@@ -12,7 +12,7 @@
 
     // Footer status pill. Reads the same feed as /status, and stays hidden on any failure
     // or stale reading - a landing page should never announce an outage it is not sure of.
-    fetch("https://raw.githubusercontent.com/BlueVolt1/app/status-data/status.json", { cache: "no-store" })
+    fetch("https://raw.githubusercontent.com/BlueVolt1/Website/status-data/status.json", { cache: "no-store" })
         .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
         .then(function (data) {
             // Must match STALE_MS in /status: two missed 30-minute runs plus the raw
